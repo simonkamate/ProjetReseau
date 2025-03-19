@@ -1,0 +1,7 @@
+[15:07:07] Serveur SSL démarré sur le port 1234...
+[15:07:25] Nouveau client connecté : /127.0.0.1:50392
+[15:07:25] Client authentifié : /127.0.0.1:50392
+[15:07:30] Commande reçue de /127.0.0.1:50392 : dir
+[15:07:30] Résultat envoyé à /127.0.0.1:50392
+[15:07:32] Client déconnecté : /127.0.0.1:50392
+[15:07:33] Serveur arrêté.
