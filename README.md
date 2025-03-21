@@ -1,106 +1,83 @@
-Système de Contrôle à Distance - ESP Dakar
-Ce projet est une application client-serveur de contrôle à distance qui permet d'exécuter des commandes et de transférer des fichiers de manière sécurisée entre deux machines. L'application est développée en Java avec JavaFX pour l'interface graphique et utilise SSL pour sécuriser les communications.
-Fonctionnalités
-Serveur
+# Logiciel de Contrôle à Distance en Java
 
-Interface graphique pour la gestion des connexions
-Authentification des clients par login/mot de passe
-Exécution de commandes système à distance
-Transfert de fichiers bidirectionnel (upload/download)
-Journalisation des activités (interface et fichier)
-Communications chiffrées via SSL
+## Description
+Ce projet est une implémentation d'un logiciel de contrôle à distance développé dans le cadre du module "Java Avancé" à l'École Supérieure Polytechnique de Dakar (ESP Dakar) pour le Master 1 GLSI sous la direction de Dr. Mouhamed DIOP. Il permet à un client d'exécuter des commandes à distance sur un serveur, de transférer des fichiers, et de gérer plusieurs connexions simultanées via une interface graphique développée avec JavaFX.
 
-Client
+## Fonctionnalités
+### Côté Client
+- **Connexion sécurisée** : Connexion au serveur via SSL/TLS avec authentification (login/mot de passe).
+- **Exécution de commandes** : Envoi de commandes système (ex. `dir` sous Windows, `ls` sous Linux) et affichage des résultats.
+- **Transfert de fichiers** :
+  - **Upload** : Envoi de fichiers vers le serveur.
+  - **Download** : Réception de fichiers depuis le serveur, stockés dans le dossier local `client_files`.
+- **Interface graphique** :
+  - Champs pour saisir l'hôte, le port, le login et le mot de passe.
+  - Boutons pour se connecter/déconnecter, envoyer des commandes, uploader et télécharger des fichiers.
+  - Liste des résultats et historique des commandes avec réutilisation par double-clic.
+  - Indicateur de statut (connecté/déconnecté).
 
-Interface graphique intuitive
-Connexion sécurisée SSL au serveur
-Exécution de commandes à distance
-Upload et téléchargement de fichiers
-Historique des commandes
-Support complet d'encodage UTF-8
+### Côté Serveur
+- **Gestion multi-clients** : Supporte plusieurs connexions simultanées grâce à des threads.
+- **Authentification** : Vérifie les identifiants des clients avant de permettre l'accès.
+- **Exécution de commandes** : Exécute les commandes reçues et renvoie les résultats.
+- **Transfert de fichiers** :
+  - Réception de fichiers dans le dossier `server_files`.
+  - Envoi de fichiers demandés par les clients.
+- **Interface graphique** :
+  - Liste des clients connectés avec leurs adresses.
+  - Journal des événements (connexions, commandes, erreurs) affiché et sauvegardé dans `journal_serveur.txt`.
+  - Boutons pour démarrer/arrêter le serveur.
 
-Prérequis
+## Prérequis
+- **Java** : Version 8 ou supérieure.
+- **JavaFX** : Inclus dans le JDK ou configuré séparément si nécessaire.
+- **Keystores SSL** :
+  - `server.keystore` pour le serveur.
+  - `client.keystore` pour le client.
+  - Mot de passe par défaut : `changeit`.
 
-Java 8 ou supérieur
-JavaFX
-Un keystore SSL configuré pour le serveur
-
-Configuration du SSL
-Avant de lancer l'application, vous devez générer un keystore SSL :
-bashCopierkeytool -genkeypair -alias server -keyalg RSA -keysize 2048 -keystore server.keystore -validity 365
-Le mot de passe par défaut utilisé dans l'application est "changeit". Si vous utilisez un mot de passe différent, modifiez-le dans le code source.
-Démarrer le serveur
-
-Compilez le code source :
-bashCopierjavac ServeurControleDistance.java
-
-Exécutez le serveur :
-bashCopierjava ServeurControleDistance
-
-Cliquez sur le bouton "Démarrer le Serveur" dans l'interface
-
-Utiliser le client
-
-Compilez le code source :
-bashCopierjavac ClientControleDistance.java
-
-Exécutez le client :
-bashCopierjava ClientControleDistance
-
-Entrez les détails de connexion :
-
-Hôte : L'adresse IP du serveur (localhost par défaut)
-Port : Le port du serveur (1234 par défaut)
-Login : Nom d'utilisateur (admin par défaut)
-Mot de passe : Le mot de passe (password123 par défaut)
+## Installation
+1. **Cloner le dépôt** :
+   ```bash
+   git clone <URL_DU_DEPOT>
 
 
-Cliquez sur "Se connecter"
+Compiler et exécuter :
+Serveur : javac ServeurControleDistance.java
+java ServeurControleDistance
+
+Client : javac ClientControleDistance.java
+java ClientControleDistance
+
+Configurer les keystores :Placez server.keystore et client.keystore dans le répertoire racine du projet.
+Générez-les avec keytool si nécessaire (voir la section "Configuration SSL").
 
 Utilisation
-Exécuter des commandes à distance
 
-Entrez une commande système dans le champ "Commande"
-Cliquez sur "Envoyer" ou appuyez sur Entrée
-Le résultat s'affichera dans la liste des résultats
+Démarrer le serveur :
+Lancez ServeurControleDistance.
+Cliquez sur "Démarrer le Serveur". Le serveur écoute sur le port 1234.
+Connecter le client :
+Lancez ClientControleDistance.
+Saisissez l'hôte (ex. localhost), le port (ex. 1234), le login (admin) et le mot de passe (password123).
+Cliquez sur "Se connecter".
+Envoyer une commande :
+Tapez une commande dans le champ "Commande" (ex. dir ou ls) et cliquez sur "Envoyer".
+Transférer des fichiers :
+Upload : Cliquez sur "Uploader Fichier", choisissez un fichier et validez.
+Download : Saisissez le nom du fichier dans le champ "Commande" et cliquez sur "Télécharger Fichier".
+Déconnexion : Cliquez sur "Se déconnecter" ou fermez la fenêtre.
 
-Uploader un fichier vers le serveur
+Configuration SSL
+Pour générer les keystores :
 
-Cliquez sur "Uploader Fichier"
-Sélectionnez un fichier dans le sélecteur de fichiers
-Le fichier sera transféré au serveur dans le dossier "server_files"
+Keystore serveur :keytool -genkeypair -alias server -keyalg RSA -keystore server.keystore -storepass changeit
+Keystore client :keytool -genkeypair -alias client -keyalg RSA -keystore client.keystore -storepass changeit
 
-Télécharger un fichier depuis le serveur
-
-Entrez le nom du fichier à télécharger dans le champ "Commande"
-Cliquez sur "Télécharger Fichier"
-Le fichier sera téléchargé avec le préfixe "downloaded_"
-
-Structure du projet
-Serveur
-
-ServeurControleDistance.java : Application principale du serveur
-GestionnaireClient : Classe interne pour gérer les clients connectés
-
-Client
-
-ClientControleDistance.java : Application principale du client
-
-Sécurité
-
-Toutes les communications sont chiffrées via SSL
-Authentification obligatoire des clients
-Exécution des commandes dans un environnement contrôlé
-Journalisation complète de toutes les activités
-
-Limitations actuelles et améliorations possibles
-
-Authentification basique (login/mot de passe en clair)
-Interface de gestion des utilisateurs non implémentée
-Pas de limitation sur les commandes qui peuvent être exécutées
-Gestion des transferts de fichiers volumineux à améliorer
-
-Notes techniques
-
-Adaptation automatique à l'environnement Windows/Linux pour l'exécution des commandes
-Démarrage des commandes dans des processus distincts pour éviter le blocage de l'application
+Exporter et importer les certificats (facultatif pour une confiance mutuelle).
+Structure du Projet
+ClientControleDistance.java : Code source du client.
+ServeurControleDistance.java : Code source du serveur.
+client_files/ : Dossier où les fichiers téléchargés sont stockés.
+server_files/ : Dossier où les fichiers uploadés sont stockés.
+journal_serveur.txt : Fichier de logs du serveur.

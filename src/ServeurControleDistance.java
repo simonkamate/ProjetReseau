@@ -6,76 +6,64 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-// Classe principale du serveur de contrôle à distance
 public class ServeurControleDistance extends Application {
-    // Indicateur d'état du serveur (actif ou non)
-    private boolean estActif = false;
-    // Liste synchronisée des gestionnaires de clients connectés
-    private final List<GestionnaireClient> listeClients = Collections.synchronizedList(new ArrayList<>());
-    // Socket SSL pour écouter les connexions entrantes
-    private SSLServerSocket socketServeur;
-    // Zone de texte pour afficher les journaux (logs)
-    private TextArea zoneJournal;
-    // Liste pour afficher les clients connectés dans l'interface
-    private ListView<String> vueListeClients;
-    // Boutons pour démarrer et arrêter le serveur
-    private Button boutonDemarrer, boutonArreter;
-    // Écrivain pour le fichier de journalisation
-    private PrintWriter ecrivainFichierJournal;
-    // Map pour stocker les utilisateurs et leurs mots de passe (authentification)
-    private final HashMap<String, String> utilisateurs = new HashMap<>();
+    // Variables pour la gestion du serveur
+    private boolean estActif = false; // Indicateur de l'état du serveur
+    private final List<GestionnaireClient> listeClients = Collections.synchronizedList(new ArrayList<>()); // Liste des clients connectés
+    private SSLServerSocket socketServeur; // Socket sécurisé pour accepter les connexions
+    private TextArea zoneJournal; // Zone pour afficher les logs
+    private ListView<String> vueListeClients; // Liste pour afficher les clients connectés
+    private Button boutonDemarrer, boutonArreter; // Boutons pour contrôler le serveur
+    private PrintWriter ecrivainFichierJournal; // Écrivain pour sauvegarder les logs dans un fichier
+    private final HashMap<String, String> utilisateurs = new HashMap<>(); // Base de données simple des utilisateurs
 
-    // Constructeur : initialise les utilisateurs pour l'authentification
+    // Constructeur : initialise les identifiants par défaut
     public ServeurControleDistance() {
         utilisateurs.put("admin", "password123");
     }
 
-    // Point d'entrée de l'application
     public static void main(String[] args) {
-        launch(args);
+        launch(args); // Lancement de l'application JavaFX
     }
 
     @Override
     public void start(Stage fenetrePrincipale) {
-        // Définit le titre de la fenêtre principale
         fenetrePrincipale.setTitle("Serveur de Contrôle à Distance - ESP Dakar");
 
-        // Initialisation du fichier de journalisation avec encodage UTF-8
+        // Initialisation du fichier journal
         try {
-            ecrivainFichierJournal = new PrintWriter(new OutputStreamWriter(new FileOutputStream("journal_serveur.txt", true), StandardCharsets.UTF_8), true);
+            ecrivainFichierJournal = new PrintWriter(
+                    new OutputStreamWriter(new FileOutputStream("journal_serveur.txt", true), StandardCharsets.UTF_8),
+                    true);
         } catch (IOException e) {
             System.err.println("Erreur création fichier journal : " + e.getMessage());
         }
 
-        // Configuration de la zone de journalisation (non éditable)
+        // Configuration de l'interface graphique
         zoneJournal = new TextArea();
         zoneJournal.setEditable(false);
         zoneJournal.setPrefHeight(300);
         zoneJournal.setPromptText("Journal des événements...");
 
-        // Configuration de la liste des clients connectés
         vueListeClients = new ListView<>();
         vueListeClients.setPrefHeight(100);
         vueListeClients.setPlaceholder(new Label("Aucun client connecté"));
 
-        // Initialisation des boutons de démarrage et d'arrêt
         boutonDemarrer = new Button("Démarrer le Serveur");
         boutonArreter = new Button("Arrêter le Serveur");
         boutonArreter.setDisable(true);
 
-        // Actions des boutons
         boutonDemarrer.setOnAction(e -> demarrerServeur());
         boutonArreter.setOnAction(e -> arreterServeur());
 
-        // Mise en page de l'interface graphique
-        VBox miseEnPage = new VBox(10, new Label("Clients connectés:"), vueListeClients, new Label("Journal:"), zoneJournal, boutonDemarrer, boutonArreter);
+        VBox miseEnPage = new VBox(10, new Label("Clients connectés:"), vueListeClients, new Label("Journal:"),
+                zoneJournal, boutonDemarrer, boutonArreter);
         miseEnPage.setPadding(new javafx.geometry.Insets(10));
         fenetrePrincipale.setScene(new Scene(miseEnPage, 600, 500));
 
@@ -88,37 +76,33 @@ public class ServeurControleDistance extends Application {
         fenetrePrincipale.show();
     }
 
-    // Méthode pour démarrer le serveur
+    // Démarre le serveur dans un thread séparé
     private void demarrerServeur() {
         if (estActif) return;
         estActif = true;
         boutonDemarrer.setDisable(true);
         boutonArreter.setDisable(false);
 
-        // Lancement du serveur dans un thread séparé
         new Thread(() -> {
             try {
-                // Configuration du keystore pour SSL
+                // Configuration SSL pour le serveur
                 System.setProperty("javax.net.ssl.keyStore", "server.keystore");
                 System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+
                 SSLServerSocketFactory fabrique = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
                 socketServeur = (SSLServerSocket) fabrique.createServerSocket(1234);
                 journaliser("Serveur SSL démarré sur le port 1234...");
 
                 // Boucle pour accepter les connexions des clients
                 while (estActif) {
-                    try {
-                        SSLSocket socketClient = (SSLSocket) socketServeur.accept();
-                        GestionnaireClient gestionnaireClient = new GestionnaireClient(socketClient);
-                        synchronized (listeClients) {
-                            listeClients.add(gestionnaireClient);
-                        }
-                        Platform.runLater(() -> vueListeClients.getItems().add(socketClient.getRemoteSocketAddress().toString()));
-                        gestionnaireClient.start();
-                    } catch (SocketException se) {
-                        if (estActif) journaliser("Erreur de socket : " + se.getMessage());
-                        break;
+                    SSLSocket socketClient = (SSLSocket) socketServeur.accept();
+                    GestionnaireClient gestionnaireClient = new GestionnaireClient(socketClient);
+                    synchronized (listeClients) {
+                        listeClients.add(gestionnaireClient);
                     }
+                    Platform.runLater(
+                            () -> vueListeClients.getItems().add(socketClient.getRemoteSocketAddress().toString()));
+                    gestionnaireClient.start();
                 }
             } catch (IOException e) {
                 journaliser("Erreur démarrage serveur : " + e.getMessage());
@@ -126,14 +110,13 @@ public class ServeurControleDistance extends Application {
         }).start();
     }
 
-    // Méthode pour arrêter le serveur
+    // Arrête le serveur et ferme toutes les connexions
     private void arreterServeur() {
         if (!estActif) return;
         estActif = false;
         boutonDemarrer.setDisable(false);
         boutonArreter.setDisable(true);
 
-        // Déconnexion de tous les clients
         synchronized (listeClients) {
             for (GestionnaireClient client : listeClients) {
                 client.fermerConnexion();
@@ -142,11 +125,8 @@ public class ServeurControleDistance extends Application {
         }
         Platform.runLater(() -> vueListeClients.getItems().clear());
 
-        // Fermeture du socket serveur
         try {
-            if (socketServeur != null && !socketServeur.isClosed()) {
-                socketServeur.close();
-            }
+            if (socketServeur != null && !socketServeur.isClosed()) socketServeur.close();
             journaliser("Serveur arrêté.");
         } catch (IOException e) {
             journaliser("Erreur arrêt serveur : " + e.getMessage());
@@ -154,28 +134,26 @@ public class ServeurControleDistance extends Application {
         if (ecrivainFichierJournal != null) ecrivainFichierJournal.close();
     }
 
-    // Méthode pour journaliser un message dans l'interface et le fichier
+    // Ajoute un message au journal (interface et fichier)
     private void journaliser(String message) {
         String messageFormate = String.format("[%tT] %s", new java.util.Date(), message);
         Platform.runLater(() -> zoneJournal.appendText(messageFormate + "\n"));
-        if (ecrivainFichierJournal != null) {
-            ecrivainFichierJournal.println(messageFormate);
-        }
+        if (ecrivainFichierJournal != null) ecrivainFichierJournal.println(messageFormate);
     }
 
-    // Classe interne pour gérer chaque client connecté
+    // Classe interne pour gérer chaque client dans un thread séparé
     class GestionnaireClient extends Thread {
         private final SSLSocket socket;
-        private BufferedReader entree;
-        private PrintWriter sortie;
-        private boolean estAuthentifie = false;
+        private BufferedReader entree; // Flux d'entrée pour lire les données du client
+        private PrintWriter sortie; // Flux de sortie pour envoyer des données au client
+        private boolean estAuthentifie = false; // Indicateur d'authentification
 
-        // Constructeur : initialise les flux d'entrée/sortie pour le client
         public GestionnaireClient(SSLSocket socket) {
             this.socket = socket;
             try {
                 entree = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-                sortie = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
+                sortie = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8),
+                        true);
             } catch (IOException e) {
                 journaliser("Erreur initialisation client : " + e.getMessage());
             }
@@ -194,7 +172,7 @@ public class ServeurControleDistance extends Application {
                     sortie.println("Connexion établie avec le serveur");
                     journaliser("Client authentifié : " + socket.getRemoteSocketAddress());
 
-                    // Boucle pour recevoir et exécuter les commandes du client
+                    // Boucle pour traiter les commandes du client
                     String commande;
                     while ((commande = entree.readLine()) != null && estActif && estAuthentifie) {
                         journaliser("Commande reçue de " + socket.getRemoteSocketAddress() + " : " + commande);
@@ -211,7 +189,7 @@ public class ServeurControleDistance extends Application {
             }
         }
 
-        // Méthode pour authentifier un client
+        // Vérifie les identifiants du client
         private boolean authentifier(String identifiants) {
             String[] parties = identifiants.split(":");
             if (parties.length != 2) return false;
@@ -220,7 +198,7 @@ public class ServeurControleDistance extends Application {
             return utilisateurs.containsKey(login) && utilisateurs.get(login).equals(motDePasse);
         }
 
-        // Méthode pour exécuter une commande reçue du client
+        // Exécute une commande reçue du client
         private void executerCommande(String commande) {
             if (commande.startsWith("UPLOAD:")) {
                 String nomFichier = commande.substring(7);
@@ -231,19 +209,18 @@ public class ServeurControleDistance extends Application {
             } else {
                 try {
                     ProcessBuilder pb;
+                    // Adaptation selon le système d'exploitation
                     if (System.getProperty("os.name").toLowerCase().contains("win")) {
-                        // Sur Windows, forcer l'encodage UTF-8
-                        pb = new ProcessBuilder("cmd.exe", "/c", "chcp 65001 > nul && " + commande);
+                        pb = new ProcessBuilder("cmd.exe", "/c", commande);
                     } else {
-                        // Sur Linux/Unix, utiliser /bin/sh
                         pb = new ProcessBuilder("/bin/sh", "-c", commande);
                     }
                     pb.redirectErrorStream(true);
-                    pb.environment().put("LC_ALL", "en_US.UTF-8");
                     Process processus = pb.start();
 
-                    // Lire la sortie de la commande avec encodage UTF-8
-                    BufferedReader lecteur = new BufferedReader(new InputStreamReader(processus.getInputStream(), StandardCharsets.UTF_8));
+                    // Capture de la sortie de la commande
+                    BufferedReader lecteur = new BufferedReader(
+                            new InputStreamReader(processus.getInputStream(), StandardCharsets.UTF_8));
                     StringBuilder resultat = new StringBuilder();
                     String ligne;
                     while ((ligne = lecteur.readLine()) != null) {
@@ -252,17 +229,13 @@ public class ServeurControleDistance extends Application {
                     processus.waitFor();
 
                     sortie.println("RESULT:" + resultat.toString());
-                    sortie.flush();
-                    journaliser("Résultat envoyé à " + socket.getRemoteSocketAddress());
                 } catch (Exception e) {
                     sortie.println("ERROR:Erreur lors de l'exécution : " + e.getMessage());
-                    sortie.flush();
-                    journaliser("Erreur exécution pour " + socket.getRemoteSocketAddress() + " : " + e.getMessage());
                 }
             }
         }
 
-        // Méthode pour recevoir un fichier envoyé par le client
+        // Reçoit un fichier envoyé par le client
         private void recevoirFichier(String nomFichier) {
             try {
                 File dossier = new File("server_files");
@@ -284,13 +257,12 @@ public class ServeurControleDistance extends Application {
             }
         }
 
-        // Méthode pour envoyer un fichier au client
+        // Envoie un fichier au client
         private void envoyerFichier(String nomFichier) {
             try {
                 File fichier = new File("server_files/" + nomFichier);
                 if (!fichier.exists()) {
                     sortie.println("ERROR:Fichier introuvable");
-                    journaliser("Fichier introuvable : " + nomFichier);
                     return;
                 }
                 FileInputStream fluxEntreeFichier = new FileInputStream(fichier);
@@ -303,14 +275,13 @@ public class ServeurControleDistance extends Application {
                 fluxEntreeFichier.close();
                 fluxSortie.flush();
                 journaliser("Fichier envoyé : " + nomFichier);
-                sortie.println("RESULT:Fichier téléchargé avec succès");
             } catch (IOException e) {
                 sortie.println("ERROR:Erreur download : " + e.getMessage());
                 journaliser("Erreur envoi fichier : " + e.getMessage());
             }
         }
 
-        // Méthode pour fermer la connexion avec le client
+        // Ferme la connexion avec le client
         public void fermerConnexion() {
             synchronized (listeClients) {
                 listeClients.remove(this);
