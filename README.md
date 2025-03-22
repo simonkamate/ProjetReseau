@@ -47,8 +47,7 @@ Ce projet est une implémentation d'un logiciel de contrôle à distance dévelo
 ## Installation
 1. **Cloner le dépôt** :
    ```bash
-   git clone <https://github.com/simonkamate/ProjetReseau>
-
+   git clone https://github.com/simonkamate/ProjetReseau.git 
 
 Compiler et exécuter :
 Serveur : javac ServeurControleDistance.java
