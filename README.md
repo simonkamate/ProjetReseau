@@ -1,3 +1,12 @@
+# Labyrinthe_Projet
+# Membres du groupe:
+- Simon Ezéchiel KAMATE
+- Massina Sylvanus BASSENE
+- Assietou NDIAYE
+
+Classe: **M1 GLSI**
+
+
 # Logiciel de Contrôle à Distance en Java
 
 ## Description

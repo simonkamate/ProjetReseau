@@ -1,66 +1,21 @@
-[15:07:07] Serveur SSL démarré sur le port 1234...
-[15:07:25] Nouveau client connecté : /127.0.0.1:50392
-[15:07:25] Client authentifié : /127.0.0.1:50392
-[15:07:30] Commande reçue de /127.0.0.1:50392 : dir
-[15:07:30] Résultat envoyé à /127.0.0.1:50392
-[15:07:32] Client déconnecté : /127.0.0.1:50392
-[15:07:33] Serveur arrêté.
-[11:01:57] Serveur SSL démarré sur le port 1234...
-[11:02:08] Nouveau client connecté : /127.0.0.1:51086
-[11:02:08] Client authentifié : /127.0.0.1:51086
-[11:04:00] Commande reçue de /127.0.0.1:51086 : dir
-[11:04:00] Résultat envoyé à /127.0.0.1:51086
-[11:04:55] Commande reçue de /127.0.0.1:51086 : mkdir isaac
-[11:04:55] Résultat envoyé à /127.0.0.1:51086
-[11:05:37] Commande reçue de /127.0.0.1:51086 : dir
-[11:05:37] Résultat envoyé à /127.0.0.1:51086
-[11:05:52] Client déconnecté : /127.0.0.1:51086
-[11:05:57] Nouveau client connecté : /127.0.0.1:51282
-[11:05:57] Client authentifié : /127.0.0.1:51282
-[11:06:16] Nouveau client connecté : /127.0.0.1:51295
-[11:06:17] Échec authentification : /127.0.0.1:51295
-[11:06:17] Client déconnecté : /127.0.0.1:51295
-[11:06:53] Nouveau client connecté : /127.0.0.1:51324
-[11:06:53] Client authentifié : /127.0.0.1:51324
-[11:07:03] Commande reçue de /127.0.0.1:51324 : ls
-[11:07:03] Résultat envoyé à /127.0.0.1:51324
-[11:07:15] Client déconnecté : /127.0.0.1:51324
-[11:07:29] Commande reçue de /127.0.0.1:51282 : UPLOAD:Part1.pdf
-[11:07:29] Fichier reçu : Part1.pdf
-[11:08:01] Commande reçue de /127.0.0.1:51282 : DOWNLOAD:Part1.pdf
-[11:08:01] Fichier envoyé : Part1.pdf
-[11:12:48] Client déconnecté : /127.0.0.1:51282
-[11:12:48] Client déconnecté : /127.0.0.1:51282
-[12:28:07] Serveur SSL démarré sur le port 1234...
-[12:28:13] Nouveau client connecté : /127.0.0.1:52535
-[12:28:13] Erreur communication avec /127.0.0.1:52535 : Connection has closed: javax.net.ssl.SSLException: (unexpected_message) Une connexion établie a été abandonnée par un logiciel de votre ordinateur hôte
-[12:28:13] Client déconnecté : /127.0.0.1:52535
-[12:39:00] Serveur SSL démarré sur le port 1234...
-[12:39:04] Nouveau client connecté : /127.0.0.1:52614
-[12:39:04] Client authentifié : /127.0.0.1:52614
-[12:39:10] Commande reçue de /127.0.0.1:52614 : dir
-[12:39:22] Commande reçue de /127.0.0.1:52614 : UPLOAD:Part2.pdf
-[12:39:22] Fichier reçu : Part2.pdf
-[12:39:40] Commande reçue de /127.0.0.1:52614 : DOWNLOAD:Part2.pdf
-[12:39:40] Fichier envoyé : Part2.pdf
-[12:40:05] Client déconnecté : /127.0.0.1:52614
-[12:40:08] Serveur arrêté.
-[12:53:13] Serveur SSL démarré sur le port 1234...
-[12:53:16] Nouveau client connecté : /127.0.0.1:52690
-[12:53:17] Client authentifié : /127.0.0.1:52690
-[12:53:21] Commande reçue de /127.0.0.1:52690 : dir
-[12:53:31] Commande reçue de /127.0.0.1:52690 : UPLOAD:login.html
-[12:53:31] Fichier reçu : login.html
-[12:53:37] Commande reçue de /127.0.0.1:52690 : DOWNLOAD:login.html
-[12:53:37] Fichier envoyé : login.html
-[12:53:57] Erreur communication avec /127.0.0.1:52690 : Connection reset
-[12:53:57] Client déconnecté : /127.0.0.1:52690
-[12:53:58] Serveur arrêté.
-[12:54:15] Serveur SSL démarré sur le port 1234...
-[12:54:18] Nouveau client connecté : /127.0.0.1:52702
-[12:54:18] Client authentifié : /127.0.0.1:52702
-[12:54:22] Commande reçue de /127.0.0.1:52702 : dir
-[12:54:29] Commande reçue de /127.0.0.1:52702 : UPLOAD:index.html
-[12:54:29] Fichier reçu : index.html
-[12:54:37] Commande reçue de /127.0.0.1:52702 : DOWNLOAD:index.html
-[12:54:37] Fichier envoyé : index.html
+[16:57:53] Erreur démarrage serveur : java.security.NoSuchAlgorithmException: Error constructing implementation (algorithm: Default, provider: SunJSSE, class: sun.security.ssl.SSLContextImpl$DefaultSSLContext)
+[16:58:05] Serveur arrêté.
+[17:01:07] Serveur SSL démarré sur le port 1234...
+[17:01:29] Nouveau client connecté : /127.0.0.1:60841
+[17:01:29] Client authentifié : /127.0.0.1:60841
+[17:01:47] Nouveau client connecté : /127.0.0.1:60843
+[17:01:47] Échec authentification : /127.0.0.1:60843
+[17:01:47] Client déconnecté : /127.0.0.1:60843
+[17:02:01] Nouveau client connecté : /127.0.0.1:60844
+[17:02:01] Client authentifié : /127.0.0.1:60844
+[17:02:17] Commande reçue de /127.0.0.1:60844 : ls
+[17:02:29] Commande reçue de /127.0.0.1:60844 : dir
+[17:02:46] Commande reçue de /127.0.0.1:60844 : mkdir massina
+[17:02:50] Commande reçue de /127.0.0.1:60844 : dir
+[17:03:21] Commande reçue de /127.0.0.1:60841 : ls
+[17:03:49] Commande reçue de /127.0.0.1:60844 : UPLOAD:styles.css
+[17:03:49] Fichier reçu : styles.css
+[17:04:21] Commande reçue de /127.0.0.1:60844 : styles.css
+[17:04:36] Commande reçue de /127.0.0.1:60844 : styles.css
+[17:04:51] Commande reçue de /127.0.0.1:60844 : DOWNLOAD:styles.css
+[17:04:51] Fichier envoyé : styles.css

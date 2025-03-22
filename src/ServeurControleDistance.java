@@ -34,7 +34,7 @@ public class ServeurControleDistance extends Application {
 
     @Override
     public void start(Stage fenetrePrincipale) {
-        fenetrePrincipale.setTitle("Serveur de Contrôle à Distance - ESP Dakar");
+        fenetrePrincipale.setTitle("Serveur");
 
         // Initialisation du fichier journal
         try {

@@ -1,0 +1,9 @@
+/* styles.css */
+#dropzone:hover {
+    background-color: #f3f4f6;
+    border-color: #2563eb;
+}
+
+canvas {
+    max-height: 300px;
+}

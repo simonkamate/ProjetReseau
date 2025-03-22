@@ -37,7 +37,7 @@ public class ClientControleDistance extends Application {
     @Override
     public void start(Stage fenetrePrincipale) {
         // Configuration de la fenêtre principale
-        fenetrePrincipale.setTitle("Client de Contrôle à Distance - ESP Dakar");
+        fenetrePrincipale.setTitle("Client");
         BorderPane racine = new BorderPane();
 
         // Section connexion : champs et boutons pour établir la connexion
