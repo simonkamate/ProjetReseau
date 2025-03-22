@@ -47,7 +47,7 @@ Ce projet est une implémentation d'un logiciel de contrôle à distance dévelo
 ## Installation
 1. **Cloner le dépôt** :
    ```bash
-   git clone <URL_DU_DEPOT>
+   git clone <https://github.com/simonkamate/ProjetReseau>
 
 
 Compiler et exécuter :
